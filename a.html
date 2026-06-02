@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Movely｜搬家公司的估價與營運後台</title>
+<!-- 方向 A:可信賴工具感。藍/石板灰、乾淨 SaaS、卡片式、留白多。離線可開。 -->
+<style>
+  :root{
+    --ink:#0f172a; --soft:#64748b; --line:#e2e8f0; --bg:#f8fafc; --card:#fff;
+    --blue:#2563eb; --blue-d:#1d4ed8; --blue-soft:#eff4ff; --radius:12px;
+    --shadow:0 1px 2px rgba(15,23,42,.04),0 10px 30px rgba(15,23,42,.06);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:"PingFang TC","Noto Sans TC","Microsoft JhengHei",-apple-system,"Segoe UI",sans-serif;
+    color:var(--ink);background:var(--bg);line-height:1.7;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 24px}
+  a{text-decoration:none;color:inherit}
+  .btn{display:inline-block;background:var(--blue);color:#fff;font-weight:700;padding:14px 28px;
+    border-radius:10px;font-size:1rem;box-shadow:var(--shadow);transition:.12s}
+  .btn:hover{background:var(--blue-d);transform:translateY(-1px)}
+  .btn-ghost{background:#fff;color:var(--blue);border:1px solid var(--line);box-shadow:none}
+  header{position:sticky;top:0;z-index:9;background:rgba(248,250,252,.9);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+  .nav{display:flex;align-items:center;justify-content:space-between;height:64px}
+  .logo{font-weight:800;font-size:1.3rem;letter-spacing:-.5px}.logo span{color:var(--blue)}
+  .nav .btn{padding:9px 20px;font-size:.92rem}
+  .hero{padding:72px 0 60px;text-align:center}
+  .eyebrow{display:inline-block;background:var(--blue-soft);color:var(--blue);font-weight:700;
+    font-size:.83rem;padding:6px 14px;border-radius:999px;margin-bottom:22px}
+  h1{font-size:clamp(2rem,5vw,3.2rem);line-height:1.25;letter-spacing:-1px;font-weight:800}
+  h1 em{color:var(--blue);font-style:normal}
+  .hero p.lead{font-size:clamp(1.05rem,2.3vw,1.25rem);color:var(--soft);margin:22px auto 32px;max-width:46ch}
+  .cta-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+  .note{color:var(--soft);font-size:.9rem;margin-top:16px}
+  section{padding:60px 0}
+  .head{text-align:center;max-width:46ch;margin:0 auto 40px}
+  h2{font-size:clamp(1.55rem,3.4vw,2.1rem);letter-spacing:-.5px;font-weight:800}
+  .head p{color:var(--soft);margin-top:10px}
+  .price{background:#fff;border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);
+    padding:44px;display:grid;grid-template-columns:1fr 1.1fr;gap:40px;align-items:center}
+  .amt{font-size:clamp(2.8rem,7vw,3.8rem);font-weight:800;line-height:1;color:var(--ink)}
+  .amt .cur{font-size:1.3rem;font-weight:700;color:var(--blue);vertical-align:top;margin-right:3px}
+  .amt small{font-size:1rem;font-weight:600;color:var(--soft)}
+  .plan{display:inline-block;margin-top:12px;background:var(--blue-soft);color:var(--blue);
+    padding:6px 14px;border-radius:999px;font-weight:700;font-size:.88rem}
+  .price .sub{color:var(--soft);margin:14px 0 18px;max-width:30ch}
+  .feat{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:11px 20px}
+  .feat li{position:relative;padding-left:28px;font-weight:600}
+  .feat li::before{content:"✓";position:absolute;left:0;color:var(--blue);font-weight:800}
+  .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+  .card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:28px 24px;box-shadow:var(--shadow)}
+  .card .ic{width:46px;height:46px;border-radius:11px;background:var(--blue-soft);display:grid;place-items:center;font-size:1.4rem;margin-bottom:14px}
+  .card h3{font-size:1.15rem;margin-bottom:7px}.card p{color:var(--soft);font-size:.96rem}
+  .addons{background:#fff;border:1px solid var(--line);border-radius:20px;padding:36px;box-shadow:var(--shadow)}
+  .ag{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+  .pill{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:12px 16px;font-weight:700}
+  .pill .p{color:var(--blue);font-weight:800;font-size:.9rem;margin-left:4px}
+  .opt{font-size:.82rem;color:var(--blue)}
+  .closing{text-align:center}.closing p{color:var(--soft);margin:10px 0 26px}
+  footer{border-top:1px solid var(--line);padding:28px 0;color:var(--soft);font-size:.86rem;text-align:center}
+  @media(max-width:760px){.price{grid-template-columns:1fr;padding:30px 24px}.cards{grid-template-columns:1fr}.feat{grid-template-columns:1fr}section{padding:46px 0}}
+</style>
+</head>
+<body>
+<header><div class="wrap nav"><div class="logo">Movely<span>.</span></div><a href="#cta" class="btn">預約導入</a></div></header>
+
+<section class="hero"><div class="wrap">
+  <span class="eyebrow">給搬家公司的估價與營運後台</span>
+  <h1>估價、訂單、收款，<br><em>一個後台</em>全管好</h1>
+  <p class="lead">不用心算、不用翻 LINE。師傅上門、客戶要報價，當場算清楚、留得住，從估價到收款一條龍。</p>
+  <div class="cta-row"><a href="#cta" class="btn">預約導入</a><a href="#plan" class="btn btn-ghost">看方案內容</a></div>
+  <p class="note"><strong style="color:var(--blue)">NT$1,990 / 月</strong>・全功能全包・隨時可停・不綁約</p>
+</div></section>
+
+<section id="plan" style="padding-top:8px"><div class="wrap">
+  <div class="price">
+    <div>
+      <div class="amt"><span class="cur">NT$</span>1,990<small> / 月</small></div>
+      <div class="plan">完整功能・一個方案全包</div>
+      <p class="sub">開門做生意需要的，全在裡面。隨時可停、不綁約。</p>
+      <a href="#cta" class="btn">預約導入</a>
+    </div>
+    <ul class="feat">
+      <li>9 步估價 wizard</li><li>智慧計價引擎</li><li>訂單管理</li><li>預約單</li>
+      <li>收款記錄</li><li>客戶與地址管理</li><li>營運儀表板</li><li>多分店 / 員工帳號</li>
+    </ul>
+  </div>
+</div></section>
+
+<section><div class="wrap">
+  <div class="head"><h2>老闆最有感的三件事</h2><p>不是多一套要學的軟體，是少掉每天在燒的時間。</p></div>
+  <div class="cards">
+    <div class="card"><div class="ic">🧮</div><h3>報價更快更準</h3><p>物品、車型、人力、距離一輸入，金額當場算好。不怕報錯虧本。</p></div>
+    <div class="card"><div class="ic">📇</div><h3>客戶與案子一站管理</h3><p>誰問過、報多少、簽了沒、收款沒，全在一個地方。</p></div>
+    <div class="card"><div class="ic">🧑‍🔧</div><h3>估價師專屬工作台</h3><p>上門到成交一條龍，新人也能快速上手。</p></div>
+  </div>
+</div></section>
+
+<section style="background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line)"><div class="wrap">
+  <div class="head"><h2>親眼看看 Movely</h2><p>不是簡報、不是示意圖，這就是你估價師每天會用的真實畫面。</p></div>
+  <div style="display:grid;gap:22px;max-width:880px;margin:0 auto">
+    <figure style="margin:0;border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:var(--shadow)">
+      <img src="screen-estimate.png" alt="估價單明細" style="width:100%;display:block">
+      <figcaption style="padding:13px 18px;color:var(--soft);font-size:.93rem;border-top:1px solid var(--line)">估價單明細：物品、搬遷路線、距離、套餐自動算出總額，一鍵列印 PDF 交給客戶。</figcaption>
+    </figure>
+    <figure style="margin:0;border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:var(--shadow)">
+      <img src="screen-dashboard.png" alt="營運儀表板" style="width:100%;display:block">
+      <figcaption style="padding:13px 18px;color:var(--soft);font-size:.93rem;border-top:1px solid var(--line)">營運儀表板：待估價、待簽約、待收訂金、今日搬家，一眼掌握整間公司。</figcaption>
+    </figure>
+    <figure style="margin:0;border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:var(--shadow)">
+      <img src="screen-list.png" alt="估價單列表" style="width:100%;display:block">
+      <figcaption style="padding:13px 18px;color:var(--soft);font-size:.93rem;border-top:1px solid var(--line)">估價單列表：誰問過、報多少、什麼時候，全部留得住、查得到。</figcaption>
+    </figure>
+  </div>
+</div></section>
+
+<section id="cta" class="closing"><div class="wrap">
+  <h2>先用真實的一筆案子，試試看</h2>
+  <p>帶上你上週一筆搬家單，我們當場跑一次估價。順不順、值不值，你自己判斷。</p>
+  <a href="#" class="btn">預約導入</a>
+  <p class="note"><strong style="color:var(--blue)">NT$1,990 / 月</strong>・全功能全包・隨時可停・不綁約</p>
+</div></section>
+
+<footer><div class="wrap">Movely・搬家公司的估價與營運後台　|　給估價師用的內部工具</div></footer>
+</body>
+</html>
