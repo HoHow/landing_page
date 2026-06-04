@@ -25,6 +25,9 @@
   .nav{display:flex;align-items:center;justify-content:space-between;height:64px}
   .logo{font-weight:800;font-size:1.3rem;letter-spacing:-.5px}.logo span{color:var(--blue)}
   .nav .btn{padding:9px 20px;font-size:.92rem}
+  .navlinks{display:flex;gap:26px;font-size:.92rem;font-weight:600;color:var(--soft)}
+  .navlinks a:hover{color:var(--blue)}
+  @media(max-width:760px){.navlinks{display:none}}
   .hero{padding:72px 0 60px;text-align:center}
   .eyebrow{display:inline-block;background:var(--blue-soft);color:var(--blue);font-weight:700;
     font-size:.83rem;padding:6px 14px;border-radius:999px;margin-bottom:22px}
@@ -33,7 +36,7 @@
   .hero p.lead{font-size:clamp(1.05rem,2.3vw,1.25rem);color:var(--soft);margin:22px auto 32px;max-width:46ch}
   .cta-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
   .note{color:var(--soft);font-size:.9rem;margin-top:16px}
-  section{padding:60px 0}
+  section{padding:60px 0;scroll-margin-top:72px}
   .head{text-align:center;max-width:46ch;margin:0 auto 40px}
   h2{font-size:clamp(1.55rem,3.4vw,2.1rem);letter-spacing:-.5px;font-weight:800}
   .head p{color:var(--soft);margin-top:10px}
@@ -63,22 +66,31 @@
 </style>
 </head>
 <body>
-<header><div class="wrap nav"><div class="logo">Movely<span>.</span></div><a href="#cta" class="btn">預約導入</a></div></header>
+<header><div class="wrap nav">
+  <div class="logo">Movely<span>.</span></div>
+  <nav class="navlinks">
+    <a href="#features">功能</a>
+    <a href="#screens">真實畫面</a>
+    <a href="#roadmap">即將推出</a>
+    <a href="#plan">方案</a>
+  </nav>
+  <a href="#cta" class="btn">預約導入</a>
+</div></header>
 
 <section class="hero"><div class="wrap">
-  <span class="eyebrow">給搬家公司的估價與營運後台</span>
-  <h1>估價、訂單、收款，<br><em>一個後台</em>全管好</h1>
-  <p class="lead">不用心算、不用翻 LINE。師傅上門、客戶要報價，當場算清楚、留得住，從估價到收款一條龍。</p>
+  <span class="eyebrow">給不想再白做工的搬家老闆</span>
+  <h1>報過的價、問過的客，<br>最後都<em>不曉得跑哪去了</em></h1>
+  <p class="lead">漏一單、忘了回一個客人，一年加起來不只虧一台車。Movely 把每張估價單、每筆收款都留在你的後台 —— 誰問過、報多少、收了沒，查得到、跟得上、收得回。</p>
   <div class="cta-row"><a href="#cta" class="btn">預約導入</a><a href="#plan" class="btn btn-ghost">看方案內容</a></div>
-  <p class="note"><strong style="color:var(--blue)">全功能全包</strong>・隨時可停・不綁約</p>
+  <p class="note"><strong style="color:var(--blue)">核心一次到位</strong>・進階依需求加購・不綁約</p>
 </div></section>
 
 <section id="plan" style="padding-top:8px"><div class="wrap">
   <div class="price">
     <div>
       <div class="amt" style="font-size:1.8rem">方案費用・歡迎洽詢</div>
-      <div class="plan">完整功能・一個方案全包</div>
-      <p class="sub">開門做生意需要的，全在裡面。隨時可停、不綁約。</p>
+      <div class="plan">核心一次到位・進階模組依需求加購</div>
+      <p class="sub">開門做生意要用的核心，一次到位；排程、派工、合約等進階功能，依你需求加購。用得順再續，隨時可停、不綁約。</p>
       <a href="#cta" class="btn">預約導入</a>
     </div>
     <ul class="feat">
@@ -88,16 +100,16 @@
   </div>
 </div></section>
 
-<section><div class="wrap">
+<section id="features"><div class="wrap">
   <div class="head"><h2>老闆最有感的三件事</h2><p>不是多一套要學的軟體，是少掉每天在燒的時間。</p></div>
   <div class="cards">
-    <div class="card"><div class="ic">🧮</div><h3>報價更快更準</h3><p>物品、車型、人力、距離一輸入，金額當場算好。不怕報錯虧本。</p></div>
-    <div class="card"><div class="ic">📇</div><h3>客戶與案子一站管理</h3><p>誰問過、報多少、簽了沒、收款沒，全在一個地方。</p></div>
-    <div class="card"><div class="ic">🧑‍🔧</div><h3>估價師專屬工作台</h3><p>上門到成交一條龍，新人也能快速上手。</p></div>
+    <div class="card"><div class="ic">🧮</div><h3>報價當場算，不怕報錯虧本</h3><p>物品、車型、人力、距離一輸入，金額馬上跳出來。不用再回去翻價目表、半夜對數字對到頭痛。</p></div>
+    <div class="card"><div class="ic">📇</div><h3>每張單都留底，不靠記性</h3><p>誰問過、報多少、簽了沒、尾款收了沒 —— 全在一個後台查得到。漏單這回事，從你公司消失。</p></div>
+    <div class="card"><div class="ic">🧑‍🔧</div><h3>估價師一個畫面全搞定</h3><p>從上門報價到成交收款一條龍，流程都幫你排好。新來的師傅，當天就能上手。</p></div>
   </div>
 </div></section>
 
-<section style="background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line)"><div class="wrap">
+<section id="screens" style="background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line)"><div class="wrap">
   <div class="head"><h2>親眼看看 Movely</h2><p>不是簡報、不是示意圖，這就是你估價師每天會用的真實畫面。</p></div>
   <div style="display:grid;gap:22px;max-width:880px;margin:0 auto">
     <figure style="margin:0;border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:var(--shadow)">
@@ -127,11 +139,37 @@
   </div>
 </div></section>
 
+<section id="roadmap"><div class="wrap">
+  <div class="head">
+    <span class="eyebrow">開發藍圖・Roadmap</span>
+    <h2>接下來，跟創始夥伴一起長出來</h2>
+    <p>下面這些正在開發。你現在以早鳥價加入，等於參與決定它們怎麼做 —— 你的真實需求，就是我們的開發順序。</p>
+  </div>
+
+  <figure style="margin:0 auto 28px;max-width:760px;border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:var(--shadow);position:relative">
+    <span style="position:absolute;top:14px;left:14px;z-index:2;font-size:.74rem;font-weight:700;padding:5px 12px;border-radius:999px;background:rgba(37,99,235,.92);color:#fff">設計稿・開發中</span>
+    <img src="screen-roadmap-line.png" alt="LINE 整合（設計稿）" style="width:100%;display:block">
+    <figcaption style="padding:14px 18px;color:var(--soft);font-size:.93rem;border-top:1px solid var(--line)">LINE 整合：用公司的 Official Account 取代老闆個人 LINE，員工離職也帶不走客戶。Rich Menu、完工一鍵推播評價、回頭客提醒，全部老闆或估價師按鈕才送出 —— 半自動、不打擾、不踩線。</figcaption>
+  </figure>
+
+  <div class="cards" style="grid-template-columns:repeat(auto-fit,minmax(240px,1fr))">
+    <div class="card"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><div class="ic" style="margin-bottom:0">📇</div><span style="font-size:.72rem;font-weight:700;padding:4px 10px;border-radius:999px;background:var(--blue-soft);color:var(--blue)">開發中</span></div><h3>客戶 CRM</h3><p>回頭客、VIP 自動標記，老客戶一眼認得出來，回購不漏接。</p></div>
+    <div class="card"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><div class="ic" style="margin-bottom:0">📥</div><span style="font-size:.72rem;font-weight:700;padding:4px 10px;border-radius:999px;background:var(--blue-soft);color:var(--blue)">開發中</span></div><h3>詢價收件箱</h3><p>LINE、電話、網站來的詢價統一收，紅燈提醒，一張單都不漏。</p></div>
+    <div class="card"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><div class="ic" style="margin-bottom:0">🚚</div><span style="font-size:.72rem;font-weight:700;padding:4px 10px;border-radius:999px;background:var(--blue-soft);color:var(--blue)">開發中</span></div><h3>派車中心</h3><p>拖拉式排班，師傅、車輛一目了然，同一時段不再撞單。</p></div>
+    <div class="card"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><div class="ic" style="margin-bottom:0">📊</div><span style="font-size:.72rem;font-weight:700;padding:4px 10px;border-radius:999px;background:#f1f5f9;color:var(--soft)">規劃中</span></div><h3>報表分析</h3><p>月營收、訂單來源、估價師成交率，老闆看數字做決策。</p></div>
+    <div class="card"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><div class="ic" style="margin-bottom:0">🗓️</div><span style="font-size:.72rem;font-weight:700;padding:4px 10px;border-radius:999px;background:#f1f5f9;color:var(--soft)">規劃中</span></div><h3>尖離峰定價</h3><p>旺季加成、淡季折扣，日期可調，旺季多賺、淡季搶單。</p></div>
+    <div class="card"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><div class="ic" style="margin-bottom:0">🧮</div><span style="font-size:.72rem;font-weight:700;padding:4px 10px;border-radius:999px;background:#f1f5f9;color:var(--soft)">規劃中</span></div><h3>員工拆賬</h3><p>估價師抽成、師傅趟次，月底自動算清，分錢不再吵架。</p></div>
+    <div class="card"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><div class="ic" style="margin-bottom:0">🛟</div><span style="font-size:.72rem;font-weight:700;padding:4px 10px;border-radius:999px;background:#f1f5f9;color:var(--soft)">規劃中</span></div><h3>客訴處理</h3><p>損壞、延遲、爭議受理，賠償直接連退款，糾紛有紀錄可查。</p></div>
+  </div>
+
+  <p class="note" style="text-align:center;margin-top:24px">想優先做哪個？<strong style="color:var(--blue)">創始夥伴一句話就能插隊。</strong></p>
+</div></section>
+
 <section id="cta" class="closing"><div class="wrap">
   <h2>先用真實的一筆案子，試試看</h2>
   <p>帶上你上週一筆搬家單，我們當場跑一次估價。順不順、值不值，你自己判斷。</p>
   <a href="#" class="btn">預約導入</a>
-  <p class="note"><strong style="color:var(--blue)">全功能全包</strong>・隨時可停・不綁約</p>
+  <p class="note"><strong style="color:var(--blue)">核心一次到位</strong>・進階依需求加購・不綁約</p>
 </div></section>
 
 <footer><div class="wrap">Movely・搬家公司的估價與營運後台　|　給估價師用的內部工具</div></footer>

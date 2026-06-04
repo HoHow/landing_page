@@ -1,0 +1,4 @@
+{"ts":"2026-06-04T02:12:55.623Z","cmd":"viewport","args":"1100x700","origin":"about:blank","durationMs":4,"status":"ok","hasCookies":false,"mode":"launched"}
+{"ts":"2026-06-04T02:12:55.666Z","cmd":"goto","args":"file:///tmp/landing_page_clone/index.html","origin":"file:///tmp/landing_page_clone/index.html","durationMs":6,"status":"ok","hasCookies":false,"mode":"launched"}
+{"ts":"2026-06-04T02:12:55.707Z","cmd":"wait","args":"--load","origin":"file:///tmp/landing_page_clone/index.html","durationMs":1,"status":"ok","hasCookies":false,"mode":"launched"}
+{"ts":"2026-06-04T02:12:55.795Z","cmd":"screenshot","args":"#plan /tmp/plan_preview.png","origin":"file:///tmp/landing_page_clone/index.html","durationMs":52,"status":"ok","hasCookies":false,"mode":"launched"}
