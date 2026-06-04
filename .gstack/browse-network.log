@@ -1,8 +1,0 @@
-[2026-06-04T02:12:55.662Z] GET file:///tmp/landing_page_clone/index.html → 200 (1ms, 15690B)
-[2026-06-04T02:12:55.665Z] GET file:///tmp/landing_page_clone/screen-reservation.png → 200 (7ms, 80292B)
-[2026-06-04T02:12:55.665Z] GET file:///tmp/landing_page_clone/screen-items.png → 200 (9ms, 53310B)
-[2026-06-04T02:12:55.665Z] GET file:///tmp/landing_page_clone/screen-estimate2.png → 200 (9ms, 212511B)
-[2026-06-04T02:12:55.665Z] GET file:///tmp/landing_page_clone/screen-list.png → 200 (9ms, 61517B)
-[2026-06-04T02:12:55.665Z] GET file:///tmp/landing_page_clone/screen-dashboard.png → 200 (9ms, 35997B)
-[2026-06-04T02:12:55.665Z] GET file:///tmp/landing_page_clone/screen-order-done.png → 200 (10ms, 86570B)
-[2026-06-04T02:12:55.665Z] GET file:///tmp/landing_page_clone/screen-roadmap-line.png → 200 (10ms, 84392B)
