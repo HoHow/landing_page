@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Movely 互動 Demo｜搬家公司估價與營運後台</title>
+<meta name="robots" content="noindex">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = { theme: { extend: { colors: {
+  primary:'#1B3A5C', accent:'#E67E22', bg:'#F8F9FA',
+  'border-soft':'#E2E8F0', 'text-light':'#718096',
+  success:'#059669', warn:'#F59E0B', danger:'#DC2626'
+}}}}
+</script>
+<style>
+  body{font-family:"PingFang TC","Noto Sans TC","Microsoft JhengHei",-apple-system,sans-serif}
+  .screen{display:none}.screen.active{display:block}
+  .nav-link.active{background:#E67E22;color:#fff}
+  .row-link{cursor:pointer}.row-link:hover{background:#f1f5f9}
+  ::-webkit-scrollbar{width:8px;height:8px}::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:4px}
+</style>
+</head>
+<body class="bg-bg text-primary">
+
+<!-- Demo 橫幅 -->
+<div class="bg-accent text-white text-center text-sm py-2 px-4">
+  🔍 Movely 互動示範・畫面資料皆為虛構，可自由點選 ——
+  <a href="index.html" class="underline font-bold ml-1">← 回介紹頁</a>
+</div>
+
+<div class="flex min-h-screen">
+  <!-- 側欄(對齊真實 app:bg-primary、active=橘、分組) -->
+  <aside class="w-[220px] bg-primary text-gray-100 flex flex-col shrink-0">
+    <div class="px-3 py-5 border-b border-white/10">
+      <h1 class="text-lg font-bold tracking-wide px-2">Movely</h1>
+      <p class="text-xs text-gray-300 mt-1 px-2">宏運搬家（示範）</p>
+    </div>
+    <nav class="flex-1 px-3 py-4 space-y-1">
+      <a data-nav="dashboard" class="nav-link active flex items-center gap-3 px-3 py-2 rounded text-sm font-medium hover:bg-white/10">
+        <svg class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l9-9 9 9M5 10v10h14V10"/></svg><span>儀表板</span></a>
+
+      <div class="px-3 pt-4 pb-1 text-[11px] font-semibold tracking-widest text-gray-400 uppercase">營運</div>
+      <a data-nav="calendar" class="nav-link flex items-center gap-3 px-3 py-2 rounded text-sm font-medium text-gray-200 hover:bg-white/10">
+        <svg class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3M4 11h16M5 21h14a1 1 0 001-1V7a1 1 0 00-1-1H5a1 1 0 00-1 1v13a1 1 0 001 1z"/></svg><span>行事曆</span></a>
+      <a data-nav="dispatch" class="nav-link flex items-center gap-3 px-3 py-2 rounded text-sm font-medium text-gray-200 hover:bg-white/10">
+        <svg class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13h10V6H3v7zm10 0h4l3 3v-3M5 17a1 1 0 100 2 1 1 0 000-2zm12 0a1 1 0 100 2 1 1 0 000-2z"/></svg><span>派工看板</span></a>
+      <a data-nav="reservations" class="nav-link flex items-center gap-3 px-3 py-2 rounded text-sm font-medium text-gray-200 hover:bg-white/10">
+        <svg class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg><span>預約單</span></a>
+      <a data-nav="estimates" class="nav-link flex items-center gap-3 px-3 py-2 rounded text-sm font-medium text-gray-200 hover:bg-white/10">
+        <svg class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg><span>估價單</span></a>
+      <a data-nav="orders" class="nav-link flex items-center gap-3 px-3 py-2 rounded text-sm font-medium text-gray-200 hover:bg-white/10">
+        <svg class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M20 7H4m16 0l-1 12a2 2 0 01-2 2H7a2 2 0 01-2-2L4 7m4 0V5a2 2 0 012-2h4a2 2 0 012 2v2"/></svg><span>訂單</span></a>
+      <a data-nav="customers" class="nav-link flex items-center gap-3 px-3 py-2 rounded text-sm font-medium text-gray-200 hover:bg-white/10">
+        <svg class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a4 4 0 00-3-3.87M9 20H4v-2a4 4 0 013-3.87m6-1.13a4 4 0 10-4-4 4 4 0 004 4z"/></svg><span>客戶</span></a>
+      <a data-nav="funnel" class="nav-link flex items-center gap-3 px-3 py-2 rounded text-sm font-medium text-gray-200 hover:bg-white/10">
+        <svg class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6m4 6V5m4 14v-9M5 19v-3"/></svg><span>數據分析</span></a>
+    </nav>
+    <div class="px-5 py-4 border-t border-white/10 text-xs text-gray-400">估價師 阿明</div>
+  </aside>
+
+  <!-- 主內容 -->
+  <div class="flex-1 flex flex-col min-w-0">
+    <header class="bg-white border-b border-border-soft px-4 md:px-8 py-4 flex items-center justify-between">
+      <h1 id="pageTitle" class="text-[22px] font-bold text-primary">儀表板</h1>
+      <div class="flex items-center gap-3">
+        <span class="hidden sm:inline text-sm text-text-light">阿明・宏運搬家</span>
+        <a href="index.html" class="text-sm text-accent font-medium px-3 py-1.5">← 回介紹頁</a>
+      </div>
+    </header>
+
+    <main class="flex-1 bg-bg p-4 md:p-8">
+
+      <!-- ===== 儀表板 ===== -->
+      <section data-screen="dashboard" class="screen active">
+        <div class="bg-white rounded-lg shadow p-6 border border-border-soft max-w-4xl mb-6">
+          <h2 class="text-base font-bold text-primary mb-4 pb-3 border-b border-border-soft">公司資訊</h2>
+          <div class="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm">
+            <div><p class="text-xs text-text-light mb-1">角色</p><p class="text-primary font-medium">估價師</p></div>
+            <div><p class="text-xs text-text-light mb-1">分店</p><p class="text-primary font-medium">高雄總店</p></div>
+            <div><p class="text-xs text-text-light mb-1">Email</p><p class="text-primary break-all">ming@example.com</p></div>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-6">
+          <div class="bg-white rounded-lg shadow p-4 border border-border-soft"><p class="text-xs text-text-light mb-1">待估價預約</p><p class="text-2xl font-bold text-blue-600">3</p></div>
+          <div class="bg-white rounded-lg shadow p-4 border border-border-soft"><p class="text-xs text-text-light mb-1">待簽約</p><p class="text-2xl font-bold text-yellow-600">2</p></div>
+          <div class="bg-white rounded-lg shadow p-4 border-l-4 border-l-red-500 border border-border-soft"><p class="text-xs text-red-600 mb-1">待收訂金</p><p class="text-2xl font-bold text-red-600">3</p><p class="text-xs text-red-500">NT$ 24,000</p></div>
+          <div class="bg-white rounded-lg shadow p-4 border-l-4 border-l-orange-500 border border-border-soft"><p class="text-xs text-orange-600 mb-1">待收尾款</p><p class="text-2xl font-bold text-orange-600">2</p><p class="text-xs text-orange-500">NT$ 35,600</p></div>
+          <div class="bg-white rounded-lg shadow p-4 border border-green-200"><p class="text-xs text-text-light mb-1">本月已結清</p><p class="text-2xl font-bold text-green-600">14</p><p class="text-xs text-green-500">NT$ 186,500</p></div>
+        </div>
+
+        <div class="grid lg:grid-cols-2 gap-6 max-w-5xl">
+          <div class="bg-white rounded-lg shadow p-6 border border-border-soft">
+            <h2 class="text-base font-bold text-primary mb-4 pb-3 border-b border-border-soft">今日搬家</h2>
+            <div class="space-y-3 text-sm">
+              <div class="flex items-center justify-between"><div><span class="font-bold">09:00</span>　王先生<div class="text-text-light text-xs mt-0.5">三民區 → 左營區・3.5噸＋3人</div></div><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-700">搬家中</span></div>
+              <div class="flex items-center justify-between"><div><span class="font-bold">13:30</span>　陳小姐<div class="text-text-light text-xs mt-0.5">前鎮區 → 鼓山區・5噸＋4人</div></div><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600">待出發</span></div>
+            </div>
+          </div>
+          <div class="bg-white rounded-lg shadow p-6 border border-border-soft">
+            <h2 class="text-base font-bold text-primary mb-4 pb-3 border-b border-border-soft">最近估價</h2>
+            <table class="w-full text-sm">
+              <tbody class="divide-y divide-border-soft">
+                <tr class="row-link" data-goto="estimate-detail"><td class="py-2.5 font-mono text-xs text-text-light">EST-0042</td><td>林先生</td><td class="text-right font-medium">NT$ 18,600</td><td class="text-right"><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-700">已成交</span></td></tr>
+                <tr class="row-link" data-goto="estimate-detail"><td class="py-2.5 font-mono text-xs text-text-light">EST-0041</td><td>黃小姐</td><td class="text-right font-medium">NT$ 9,200</td><td class="text-right"><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-700">待簽約</span></td></tr>
+                <tr class="row-link" data-goto="estimate-detail"><td class="py-2.5 font-mono text-xs text-text-light">EST-0040</td><td>吳先生</td><td class="text-right font-medium">NT$ 27,400</td><td class="text-right"><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-700">已報價</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== 行事曆 ===== -->
+      <section data-screen="calendar" class="screen">
+        <div class="flex items-center justify-between mb-4 max-w-4xl">
+          <button class="px-3 py-1.5 text-sm font-medium text-primary bg-white border border-border-soft rounded hover:bg-gray-50">← 上個月</button>
+          <h2 class="text-lg font-bold text-primary">2026 年 6 月</h2>
+          <button class="px-3 py-1.5 text-sm font-medium text-primary bg-white border border-border-soft rounded hover:bg-gray-50">下個月 →</button>
+        </div>
+        <div class="flex flex-wrap items-center gap-x-4 gap-y-2 mb-3 text-xs text-text-light max-w-4xl">
+          <span class="inline-flex items-center gap-1.5"><span class="w-3 h-3 rounded bg-blue-100"></span>到府估價</span>
+          <span class="inline-flex items-center gap-1.5"><span class="w-3 h-3 rounded bg-yellow-100"></span>待確認</span>
+          <span class="inline-flex items-center gap-1.5"><span class="w-3 h-3 rounded bg-green-100"></span>已確認 / 待出發</span>
+          <span class="inline-flex items-center gap-1.5"><span class="w-3 h-3 rounded bg-orange-100"></span>搬家中</span>
+          <span class="inline-flex items-center gap-1.5"><span class="w-3 h-3 rounded bg-emerald-100"></span>已完成</span>
+          <span class="inline-flex items-center gap-1.5"><span class="w-3 h-3 rounded bg-red-100"></span>異常</span>
+        </div>
+        <div class="bg-white rounded-lg shadow border border-border-soft overflow-hidden max-w-4xl">
+          <div class="grid grid-cols-7">
+            <div class="text-center text-xs font-bold text-text-light py-2 bg-gray-50 border-b border-border-soft">一</div>
+            <div class="text-center text-xs font-bold text-text-light py-2 bg-gray-50 border-b border-border-soft">二</div>
+            <div class="text-center text-xs font-bold text-text-light py-2 bg-gray-50 border-b border-border-soft">三</div>
+            <div class="text-center text-xs font-bold text-text-light py-2 bg-gray-50 border-b border-border-soft">四</div>
+            <div class="text-center text-xs font-bold text-text-light py-2 bg-gray-50 border-b border-border-soft">五</div>
+            <div class="text-center text-xs font-bold text-text-light py-2 bg-gray-50 border-b border-border-soft">六</div>
+            <div class="text-center text-xs font-bold text-text-light py-2 bg-gray-50 border-b border-border-soft">日</div>
+
+            <!-- 第1週 1-7 -->
+            <div class="min-h-[84px] border border-border-soft p-1.5 text-xs">1</div>
+            <div class="min-h-[84px] border border-border-soft p-1.5 text-xs">2</div>
+            <div class="min-h-[84px] border border-border-soft p-1.5 text-xs">3<div class="truncate px-1 py-0.5 rounded text-[11px] bg-emerald-100 text-emerald-800 mt-1">✓ 王太太 已完成</div></div>
+            <div class="min-h-[84px] border border-border-soft p-1.5 text-xs">4</div>
+            <div class="min-h-[84px] border border-border-soft p-1.5 text-xs">5<div class="truncate px-1 py-0.5 rounded text-[11px] bg-emerald-100 text-emerald-800 mt-1">✓ 李先生 已完成</div><div class="truncate px-1 py-0.5 rounded text-[11px] bg-blue-100 text-blue-800 mt-0.5">張小姐 估價</div></div>
+            <div class="min-h-[84px] border border-border-soft p-1.5 text-xs">6</div>
+            <div class="min-h-[84px] border border-border-soft p-1.5 text-xs">7</div>
+
+            <!-- 第2週 8-14 -->
+            <div class="min-h-[84px] border border-border-soft p-1.5 text-xs">8</div>
+            <div class="min-h-[84px] border border-border-soft p-1.5 text-xs">9<div class="truncate px-1 py-0.5 rounded text-[11px] bg-blue-100 text-blue-800 mt-1">陳先生 估價 10:00</div></div>
+            <div class="min-h-[84px] border border-border-soft p-1.5 text-xs">10</div>
+            <div class="min-h-[84px] border border-border-soft p-1.5 text-xs">11<div class="truncate px-1 py-0.5 rounded text-[11px] bg-emerald-100 text-emerald-800 mt-1">✓ 周先生 已完成</div></div>
+            <div class="min-h-[84px] border border-border-soft p-1.5 text-xs">12</div>
+            <div class="min-h-[84px] border border-border-soft p-1.5 text-xs">13<div class="truncate px-1 py-0.5 rounded text-[11px] bg-green-100 text-green-800 mt-1">黃小姐 09:00</div></div>
+            <div class="min-h-[84px] border border-border-soft p-1.5 text-xs">14</div>
+
+            <!-- 第3週 15-21 -->
+            <div class="min-h-[84px] border border-border-soft p-1.5 text-xs">15</div>
+            <div class="min-h-[84px] border border-border-soft p-1.5 text-xs">16<div class="truncate px-1 py-0.5 rounded text-[11px] bg-blue-100 text-blue-800 mt-1">吳太太 估價 14:00</div></div>
+            <div class="min-h-[84px] border border-border-soft p-1.5 text-xs">17</div>
+            <div class="min-h-[84px] border border-border-soft p-1.5 text-xs">18<div class="truncate px-1 py-0.5 rounded text-[11px] bg-emerald-100 text-emerald-800 mt-1">✓ 蔡先生 已完成</div></div>
+            <div class="min-h-[84px] border border-border-soft p-1.5 text-xs">19</div>
+            <div class="min-h-[84px] border border-border-soft p-1.5 text-xs">20<div class="truncate px-1 py-0.5 rounded text-[11px] bg-green-100 text-green-800 mt-1">劉小姐 13:00</div></div>
+            <div class="min-h-[84px] border border-border-soft p-1.5 text-xs">21</div>
+
+            <!-- 第4週 22-28 -->
+            <div class="min-h-[84px] border border-border-soft p-1.5 text-xs">22</div>
+            <div class="min-h-[84px] border border-border-soft p-1.5 text-xs">23<div class="truncate px-1 py-0.5 rounded text-[11px] bg-emerald-100 text-emerald-800 mt-1">✓ 何小姐 已完成</div></div>
+            <div class="min-h-[84px] border border-border-soft p-1.5 text-xs">24<div class="truncate px-1 py-0.5 rounded text-[11px] bg-emerald-100 text-emerald-800 mt-1">✓ 林先生 09:00</div></div>
+            <div class="min-h-[84px] border border-border-soft p-1.5 text-xs bg-accent/5 ring-2 ring-accent ring-inset"><span class="font-bold text-accent">25 今天</span><div class="truncate px-1 py-0.5 rounded text-[11px] bg-orange-100 text-orange-800 mt-1">王先生 09:00</div><div class="truncate px-1 py-0.5 rounded text-[11px] bg-green-100 text-green-800 mt-0.5">陳小姐 13:30</div><div class="truncate px-1 py-0.5 rounded text-[11px] bg-yellow-100 text-yellow-800 mt-0.5">郭先生 15:00</div></div>
+            <div class="min-h-[84px] border border-border-soft p-1.5 text-xs">26<div class="truncate px-1 py-0.5 rounded text-[11px] bg-blue-100 text-blue-800 mt-1">郭先生 估價</div><div class="truncate px-1 py-0.5 rounded text-[11px] bg-yellow-100 text-yellow-800 mt-0.5">趙先生 待確認</div></div>
+            <div class="min-h-[84px] border border-border-soft p-1.5 text-xs">27<div class="truncate px-1 py-0.5 rounded text-[11px] bg-green-100 text-green-800 mt-1">錢小姐 14:00</div></div>
+            <div class="min-h-[84px] border border-border-soft p-1.5 text-xs">28<div class="truncate px-1 py-0.5 rounded text-[11px] bg-red-100 text-red-800 mt-1">⚠ 補搬 異常</div></div>
+
+            <!-- 第5週 29-30 + 次月 -->
+            <div class="min-h-[84px] border border-border-soft p-1.5 text-xs">29<div class="truncate px-1 py-0.5 rounded text-[11px] bg-yellow-100 text-yellow-800 mt-1">孫先生 待確認</div></div>
+            <div class="min-h-[84px] border border-border-soft p-1.5 text-xs">30</div>
+            <div class="min-h-[84px] border border-border-soft p-1.5 text-xs bg-gray-50 text-text-light">7/1</div>
+            <div class="min-h-[84px] border border-border-soft p-1.5 text-xs bg-gray-50 text-text-light">2</div>
+            <div class="min-h-[84px] border border-border-soft p-1.5 text-xs bg-gray-50 text-text-light">3</div>
+            <div class="min-h-[84px] border border-border-soft p-1.5 text-xs bg-gray-50 text-text-light">4</div>
+            <div class="min-h-[84px] border border-border-soft p-1.5 text-xs bg-gray-50 text-text-light">5</div>
+          </div>
+        </div>
+        <p class="text-xs text-text-light mt-3 max-w-4xl">行事曆顏色直接讀派工狀態 —— 待出發、搬家中、已完成即時反映，老闆一眼看出哪天滿、哪天還能接。</p>
+      </section>
+
+      <!-- ===== 派工看板 ===== -->
+      <section data-screen="dispatch" class="screen">
+        <p class="text-text-light text-sm mb-4">當天每趟誰出車、誰跟車、搬到哪一步，一個看板掌握。同一時段不再撞單。</p>
+        <div class="text-sm font-bold mb-3">2026 / 06 / 25（今天）</div>
+        <div class="space-y-3 max-w-4xl">
+          <div class="bg-white rounded-lg shadow border border-border-soft p-5 flex items-center justify-between flex-wrap gap-3">
+            <div><div class="font-bold">09:00　王先生</div><div class="text-text-light text-xs mt-1">三民區建工路 → 左營區博愛路・組長 阿強＋小華＋阿賢・3.5噸（KH-3501）</div></div>
+            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-700">搬家中　5/9</span>
+          </div>
+          <div class="bg-white rounded-lg shadow border border-border-soft p-5 flex items-center justify-between flex-wrap gap-3">
+            <div><div class="font-bold">13:30　陳小姐</div><div class="text-text-light text-xs mt-1">前鎮區成功路 → 鼓山區美術館路・組長 阿賢＋大雄・5噸（KH-5001）</div></div>
+            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600">待出發　0/9</span>
+          </div>
+          <div class="bg-white rounded-lg shadow border border-border-soft p-5 flex items-center justify-between flex-wrap gap-3">
+            <div><div class="font-bold">15:00　郭先生</div><div class="text-text-light text-xs mt-1">苓雅區四維路 → 鳳山區青年路・組長 阿強・尚未指派車輛</div></div>
+            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-700">待指派</span>
+          </div>
+        </div>
+        <div class="mt-4 max-w-4xl bg-bg border border-border-soft rounded-lg p-4 text-sm text-primary">💡 工班在現場推進度，老闆/客服那邊的收款狀態自動跟上 —— 一個動作驅動整條鏈。</div>
+      </section>
+
+      <!-- ===== 預約單 ===== -->
+      <section data-screen="reservations" class="screen">
+        <div class="flex items-center justify-between mb-4">
+          <p class="text-text-light text-sm">客戶來電 / LINE 約到府估價，一張單記清楚，不再漏接。</p>
+          <button class="bg-accent text-white text-sm font-medium px-4 py-1.5 rounded">+ 新增預約</button>
+        </div>
+        <div class="bg-white rounded-lg shadow border border-border-soft overflow-hidden">
+          <table class="w-full text-sm">
+            <thead class="bg-bg text-text-light text-xs"><tr><th class="text-left px-4 py-3">預約編號</th><th class="text-left">客戶</th><th class="text-left">電話</th><th class="text-left">來源</th><th class="text-left">偏好時間</th><th class="text-left">狀態</th><th class="text-left">估價師</th></tr></thead>
+            <tbody class="divide-y divide-border-soft">
+              <tr class="row-link" data-goto="reservation-detail"><td class="px-4 py-3 font-mono text-xs text-text-light">RES-0231</td><td>趙先生</td><td>0921-000-001</td><td>電話</td><td>6/26 上午</td><td><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-700">待確認</span></td><td>阿明</td></tr>
+              <tr class="bg-amber-50/40 row-link" data-goto="reservation-detail"><td class="px-4 py-3 font-mono text-xs text-text-light">RES-0230</td><td>錢小姐 <span class="ml-1 inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-medium bg-blue-100 text-blue-700">🔁 回頭客</span></td><td>0921-000-002</td><td>LINE</td><td>6/27 下午</td><td><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-700">已確認</span></td><td>阿強</td></tr>
+              <tr class="row-link" data-goto="reservation-detail"><td class="px-4 py-3 font-mono text-xs text-text-light">RES-0229</td><td>孫先生</td><td>0921-000-003</td><td>親友轉介</td><td>6/25 晚間</td><td><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-700">已估價</span></td><td>阿明</td></tr>
+              <tr class="row-link" data-goto="reservation-detail"><td class="px-4 py-3 font-mono text-xs text-text-light">RES-0228</td><td>周太太</td><td>0921-000-004</td><td>Facebook</td><td>—</td><td><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-500">已取消</span></td><td>阿明</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="mt-4 bg-bg border border-border-soft rounded-lg p-4 text-sm text-primary">💡 <b>回頭客自動偵測</b>：建立預約時填手機，系統自動認出老客戶、浮出過去往來紀錄。</div>
+      </section>
+
+      <!-- ===== 預約單詳情 ===== -->
+      <section data-screen="reservation-detail" class="screen">
+        <button data-nav="reservations" class="text-accent text-sm font-medium mb-4">← 回預約單列表</button>
+        <div class="flex items-center gap-3 mb-6 flex-wrap">
+          <h2 class="text-2xl font-bold text-primary font-mono">RES-0230</h2>
+          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-700">已確認</span>
+          <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium bg-blue-100 text-blue-700">🔁 回頭客</span>
+          <button class="ml-auto bg-accent text-white text-sm font-medium px-4 py-2 rounded">編輯預約</button>
+        </div>
+
+        <div class="grid lg:grid-cols-2 gap-4 mb-4">
+          <div class="bg-white rounded-lg shadow border border-border-soft p-6">
+            <h2 class="text-base font-bold text-primary mb-4 pb-3 border-b border-border-soft">客戶資訊</h2>
+            <dl class="space-y-3 text-sm">
+              <div><dt class="text-xs text-text-light">客戶姓名</dt><dd class="text-primary font-medium">錢小姐</dd></div>
+              <div><dt class="text-xs text-text-light">手機</dt><dd class="text-primary">0921-000-002</dd></div>
+              <div><dt class="text-xs text-text-light">市話</dt><dd class="text-primary">—</dd></div>
+              <div><dt class="text-xs text-text-light">來源</dt><dd class="text-primary">LINE</dd></div>
+            </dl>
+          </div>
+          <div class="bg-white rounded-lg shadow border border-border-soft p-6">
+            <h2 class="text-base font-bold text-primary mb-4 pb-3 border-b border-border-soft">預約資訊</h2>
+            <dl class="space-y-3 text-sm">
+              <div><dt class="text-xs text-text-light">客戶期望時間</dt><dd class="text-primary">2026/06/27 下午</dd></div>
+              <div><dt class="text-xs text-text-light">估價師確認上門時間</dt><dd class="text-primary">2026/06/27 14:00</dd></div>
+              <div><dt class="text-xs text-text-light">預估時長</dt><dd class="text-primary">60 分鐘</dd></div>
+              <div><dt class="text-xs text-text-light">指派估價師</dt><dd class="text-primary">阿強</dd></div>
+            </dl>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow border border-border-soft p-6 mb-4">
+          <h2 class="text-base font-bold text-primary mb-4 pb-3 border-b border-border-soft">搬遷地點</h2>
+          <div class="space-y-2 text-sm">
+            <div><span class="text-text-light">遷出：</span>高雄市苓雅區四維三路 50 號</div>
+            <div><span class="text-text-light">遷入：</span>高雄市鼓山區美術館路 80 號</div>
+          </div>
+        </div>
+
+        <div class="bg-blue-50 border border-blue-200 rounded-lg p-5 mb-4">
+          <h2 class="text-sm font-bold text-blue-900 mb-3">🔁 回頭客往來紀錄</h2>
+          <p class="text-xs text-blue-800 mb-3">此手機過去有 <b>2 張預約</b>、<b>1 張訂單</b> —— 建立時系統自動帶出，老客戶一眼接得住。</p>
+          <div class="space-y-1.5 text-sm">
+            <div class="flex justify-between"><span><a class="text-blue-700 font-mono">RES-0188</a> <span class="text-text-light text-xs">預約 · 2026/03/12</span></span><span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] bg-green-100 text-green-700">已估價</span></div>
+            <div class="flex justify-between"><span><a class="text-blue-700 font-mono">JOB20260315001</a> <span class="text-text-light text-xs">訂單 · 2026/03/15</span></span><span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] bg-gray-100 text-gray-600">已結清</span></div>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow border border-border-soft p-6">
+          <div class="flex items-center justify-between mb-4 pb-3 border-b border-border-soft">
+            <h2 class="text-base font-bold text-primary">相關估價單</h2>
+            <button data-nav="estimate-wizard" class="bg-accent text-white text-xs font-medium px-3 py-1.5 rounded">+ 建立估價單</button>
+          </div>
+          <table class="w-full text-sm">
+            <tbody class="divide-y divide-border-soft">
+              <tr class="row-link" data-goto="estimate-detail"><td class="py-2.5 font-mono text-xs text-text-light">EST-0043</td><td>錢小姐</td><td class="text-right font-medium">NT$ 14,200</td><td class="text-right"><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-700">已報價</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ===== 估價單列表 ===== -->
+      <section data-screen="estimates" class="screen">
+        <div class="flex items-center justify-between mb-4">
+          <p class="text-text-light text-sm">誰問過、報多少、簽了沒 —— 全部留得住。點任一張看估價師工作台。</p>
+          <button data-nav="estimate-wizard" class="bg-accent text-white text-sm font-medium px-4 py-1.5 rounded">+ 建立估價單</button>
+        </div>
+        <div class="flex items-center gap-2 mb-3 text-sm flex-wrap">
+          <span class="px-3 py-1 rounded-full bg-primary text-white font-medium">全部</span>
+          <span class="px-3 py-1 rounded-full bg-white border border-border-soft text-text-light">草稿</span>
+          <span class="px-3 py-1 rounded-full bg-white border border-border-soft text-text-light">已報價</span>
+          <span class="px-3 py-1 rounded-full bg-white border border-border-soft text-text-light">待簽約</span>
+          <span class="px-3 py-1 rounded-full bg-white border border-border-soft text-text-light">已成交</span>
+          <input class="ml-auto border border-border-soft rounded px-3 py-1.5 text-sm w-44" placeholder="🔍 搜尋客戶 / 電話">
+        </div>
+        <div class="bg-white rounded-lg shadow border border-border-soft overflow-hidden">
+          <table class="w-full text-sm">
+            <thead class="bg-bg text-text-light text-xs"><tr><th class="text-left px-4 py-3">估價單號</th><th class="text-left">客戶</th><th class="text-left">搬遷路線</th><th class="text-right">金額</th><th class="text-left pl-6">狀態</th><th class="text-left">建立</th></tr></thead>
+            <tbody class="divide-y divide-border-soft">
+              <tr class="row-link" data-goto="estimate-detail"><td class="px-4 py-3 font-mono text-xs text-text-light">EST-0042</td><td>林先生</td><td class="text-text-light">三民區 → 左營區</td><td class="text-right font-medium">NT$ 18,600</td><td class="pl-6"><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-700">已成交</span></td><td class="text-text-light text-xs">6/24</td></tr>
+              <tr class="row-link" data-goto="estimate-detail"><td class="px-4 py-3 font-mono text-xs text-text-light">EST-0041</td><td>黃小姐</td><td class="text-text-light">苓雅區 → 鳳山區</td><td class="text-right font-medium">NT$ 9,200</td><td class="pl-6"><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-700">待簽約</span></td><td class="text-text-light text-xs">6/24</td></tr>
+              <tr class="row-link" data-goto="estimate-detail"><td class="px-4 py-3 font-mono text-xs text-text-light">EST-0040</td><td>吳先生</td><td class="text-text-light">楠梓區 → 三民區</td><td class="text-right font-medium">NT$ 27,400</td><td class="pl-6"><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-700">已報價</span></td><td class="text-text-light text-xs">6/23</td></tr>
+              <tr class="row-link" data-goto="estimate-detail"><td class="px-4 py-3 font-mono text-xs text-text-light">EST-0039</td><td>蔡小姐</td><td class="text-text-light">左營區 → 鼓山區</td><td class="text-right font-medium">NT$ 12,800</td><td class="pl-6"><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-500">草稿</span></td><td class="text-text-light text-xs">6/23</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ===== 估價師工作台（詳情）===== -->
+      <section data-screen="estimate-detail" class="screen">
+        <button data-nav="estimates" class="text-accent text-sm font-medium mb-4">← 回估價單列表</button>
+        <div class="flex items-center gap-3 mb-1 flex-wrap">
+          <h2 class="text-2xl font-bold text-primary font-mono">EST-0042</h2>
+          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-700">已成交</span>
+          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-700">搬家中</span>
+          <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium bg-cyan-100 text-cyan-700">v2</span>
+          <button class="ml-auto bg-accent text-white text-sm font-medium px-4 py-2 rounded">列印 / 存 PDF</button>
+        </div>
+        <p class="text-text-light text-xs mb-5">建立於 2026/06/24 11:06・估價師 阿明・服務門市 高雄總店</p>
+
+        <div class="grid lg:grid-cols-2 gap-4 mb-4">
+          <div class="bg-white rounded-lg shadow border border-border-soft p-6">
+            <h2 class="text-base font-bold text-primary mb-4 pb-3 border-b border-border-soft">客戶資訊</h2>
+            <div class="space-y-3 text-sm">
+              <div><span class="text-text-light">姓名：</span><span class="text-primary font-medium">林先生</span></div>
+              <div><span class="text-text-light">電話：</span><span class="text-primary">0912-345-678</span></div>
+              <div><span class="text-text-light">市話：</span><span class="text-primary">07-123-4567</span></div>
+            </div>
+          </div>
+          <div class="bg-white rounded-lg shadow border border-border-soft p-6">
+            <h2 class="text-base font-bold text-primary mb-4 pb-3 border-b border-border-soft">搬遷路線</h2>
+            <div class="space-y-2 text-sm">
+              <div><span class="text-text-light">遷出：</span>高雄市三民區建工路 100 號（公寓・4F・無電梯）</div>
+              <div><span class="text-text-light">遷入：</span>高雄市左營區博愛二路 200 號（電梯大樓・8F・有電梯）</div>
+              <div class="text-text-light text-xs pt-1">🗺️ 行車距離 19.6 公里・約 56 分（Google 地圖自動帶入）</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow border border-border-soft p-6 mb-4">
+          <h2 class="text-base font-bold text-primary mb-4 pb-3 border-b border-border-soft">物品清單（按空間・自動算材積）</h2>
+          <table class="w-full text-sm">
+            <thead class="text-text-light text-xs border-b border-border-soft"><tr><th class="text-left pb-2">品項</th><th class="text-center">數量</th><th class="text-center">長×寬×高 (cm)</th><th class="text-right">材積 m³</th></tr></thead>
+            <tbody class="divide-y divide-border-soft">
+              <tr><td class="py-2 text-xs text-accent font-bold" colspan="4">客廳</td></tr>
+              <tr><td class="py-2">L 型沙發</td><td class="text-center">1</td><td class="text-center text-text-light">280×95×90</td><td class="text-right">3.59</td></tr>
+              <tr><td class="py-2">六人餐桌</td><td class="text-center">1</td><td class="text-center text-text-light">180×90×75</td><td class="text-right">1.46</td></tr>
+              <tr><td class="py-2">55吋電視</td><td class="text-center">1</td><td class="text-center text-text-light">125×8×75</td><td class="text-right">0.09</td></tr>
+              <tr><td class="py-2 text-xs text-accent font-bold" colspan="4">主臥</td></tr>
+              <tr><td class="py-2">標準雙人床（含床架）</td><td class="text-center">1</td><td class="text-center text-text-light">195×155×45</td><td class="text-right">1.90</td></tr>
+              <tr><td class="py-2">四門衣櫃</td><td class="text-center">1</td><td class="text-center text-text-light">200×60×200</td><td class="text-right">3.12</td></tr>
+              <tr><td class="py-2 text-xs text-accent font-bold" colspan="4">廚房</td></tr>
+              <tr><td class="py-2">雙門冰箱</td><td class="text-center">1</td><td class="text-center text-text-light">70×70×180</td><td class="text-right">0.97</td></tr>
+              <tr><td class="py-2">紙箱（中）</td><td class="text-center">15</td><td class="text-center text-text-light">50×40×40</td><td class="text-right">1.20</td></tr>
+            </tbody>
+            <tfoot><tr class="border-t border-border-soft"><td class="pt-2 font-medium" colspan="3">總材積</td><td class="pt-2 text-right font-bold">14.2 m³</td></tr></tfoot>
+          </table>
+        </div>
+
+        <div class="bg-white rounded-lg shadow border border-border-soft p-6 mb-4">
+          <h2 class="text-base font-bold text-primary mb-4 pb-3 border-b border-border-soft">加購服務</h2>
+          <div class="space-y-2 text-sm">
+            <div class="flex justify-between"><span>鋼琴搬運 ×1</span><span class="font-medium">NT$ 3,000</span></div>
+            <div class="flex justify-between text-text-light"><span>紙箱代購（10個）×0</span><span>—</span></div>
+          </div>
+        </div>
+
+        <div class="grid lg:grid-cols-2 gap-4">
+          <div class="bg-white rounded-lg shadow border border-border-soft p-6">
+            <h2 class="text-base font-bold text-primary mb-4 pb-3 border-b border-border-soft">班組與車輛</h2>
+            <div class="space-y-3 text-sm">
+              <div><span class="text-text-light">組長：</span>阿強</div>
+              <div><span class="text-text-light">組員：</span>小華、阿賢</div>
+              <div><span class="text-text-light">車輛：</span>3.5噸貨車（KH-3501）</div>
+              <div><span class="text-text-light">搬家日：</span>2026/06/24　09:00</div>
+            </div>
+          </div>
+          <div class="bg-white rounded-lg shadow border border-border-soft p-6">
+            <h2 class="text-base font-bold text-primary mb-4 pb-3 border-b border-border-soft">計價</h2>
+            <div class="space-y-2 text-sm">
+              <div class="flex justify-between"><span class="text-text-light">搬遷服務（含車含人）</span><span>NT$ 16,500</span></div>
+              <div class="flex justify-between"><span class="text-text-light">距離加價</span><span>NT$ 480</span></div>
+              <div class="flex justify-between"><span class="text-text-light">樓層加價（4F 無電梯）</span><span>NT$ 1,600</span></div>
+              <div class="flex justify-between"><span class="text-text-light">加購（鋼琴搬運）</span><span>NT$ 3,000</span></div>
+              <div class="flex justify-between text-green-600"><span>老客戶折扣 10%</span><span>− NT$ 2,158</span></div>
+              <div class="flex justify-between font-bold text-lg text-primary pt-2 border-t border-border-soft"><span>總額</span><span>NT$ 18,600</span></div>
+              <div class="flex justify-between text-text-light text-xs"><span>訂金</span><span>NT$ 5,000（已收）</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid lg:grid-cols-2 gap-4 mt-4">
+          <div class="bg-white rounded-lg shadow border border-border-soft p-6">
+            <h2 class="text-base font-bold text-primary mb-3 pb-3 border-b border-border-soft">客戶備註</h2>
+            <p class="text-sm text-primary">鋼琴要特別小心，三樓沒電梯要走樓梯。希望早上先搬。</p>
+          </div>
+          <div class="bg-white rounded-lg shadow border border-border-soft p-6">
+            <h2 class="text-base font-bold text-primary mb-3 pb-3 border-b border-border-soft">內部備註<span class="text-text-light text-xs font-normal ml-2">（不顯示給客戶）</span></h2>
+            <p class="text-sm text-primary">客戶有比價過，報價含 10% 老客戶折扣已是底線。鋼琴另派一位老師傅。</p>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow border border-border-soft p-6 mt-4 flex items-center justify-between">
+          <div><h2 class="text-base font-bold text-primary">合約</h2><p class="text-text-light text-sm mt-1">電子合約已簽署・2026/06/24</p></div>
+          <button data-nav="contract" class="text-accent text-sm font-medium">查看合約 →</button>
+        </div>
+      </section>
+
+      <!-- ===== 建立估價單 精靈 ===== -->
+      <section data-screen="estimate-wizard" class="screen">
+        <button data-nav="estimates" class="text-accent text-sm font-medium mb-4">← 回估價單列表</button>
+        <div class="max-w-2xl">
+          <div class="mb-5">
+            <div class="flex justify-between text-xs text-text-light mb-1.5"><span id="wizStepName" class="font-medium text-primary">客戶資訊</span><span>步驟 <span id="wizStepNo">1</span> / 9</span></div>
+            <div class="h-1.5 bg-border-soft rounded-full overflow-hidden"><div id="wizBar" class="h-full bg-accent transition-all duration-300" style="width:11%"></div></div>
+          </div>
+
+          <div class="bg-white rounded-lg shadow border border-border-soft p-6 min-h-[260px]">
+            <!-- 1 客戶資訊 -->
+            <div class="wiz-step" data-step="1">
+              <h2 class="text-base font-bold text-primary mb-4">1・客戶資訊</h2>
+              <div class="grid sm:grid-cols-2 gap-3 text-sm">
+                <div><label class="block text-xs text-text-light mb-1">客戶姓名 *</label><input class="w-full border border-border-soft rounded px-3 py-2" value="王大明"></div>
+                <div><label class="block text-xs text-text-light mb-1">手機 *</label><input class="w-full border border-border-soft rounded px-3 py-2" value="0912-345-678"></div>
+                <div><label class="block text-xs text-text-light mb-1">市話</label><input class="w-full border border-border-soft rounded px-3 py-2" placeholder="選填"></div>
+                <div><label class="block text-xs text-text-light mb-1">來源</label><select class="w-full border border-border-soft rounded px-3 py-2 bg-white"><option>LINE</option><option>電話</option><option>親友轉介</option></select></div>
+              </div>
+            </div>
+            <!-- 2 遷出 -->
+            <div class="wiz-step hidden" data-step="2">
+              <h2 class="text-base font-bold text-primary mb-4">2・遷出地點</h2>
+              <div class="grid sm:grid-cols-3 gap-3 text-sm">
+                <div><label class="block text-xs text-text-light mb-1">縣市</label><select class="w-full border border-border-soft rounded px-3 py-2 bg-white"><option>高雄市</option></select></div>
+                <div><label class="block text-xs text-text-light mb-1">區域</label><select class="w-full border border-border-soft rounded px-3 py-2 bg-white"><option>三民區</option></select></div>
+                <div><label class="block text-xs text-text-light mb-1">樓層</label><input class="w-full border border-border-soft rounded px-3 py-2" value="4"></div>
+                <div class="sm:col-span-2"><label class="block text-xs text-text-light mb-1">詳細地址</label><input class="w-full border border-border-soft rounded px-3 py-2" value="建工路 100 號"></div>
+                <div><label class="block text-xs text-text-light mb-1">電梯</label><select class="w-full border border-border-soft rounded px-3 py-2 bg-white"><option>無電梯</option><option>有電梯</option></select></div>
+              </div>
+            </div>
+            <!-- 3 遷入 -->
+            <div class="wiz-step hidden" data-step="3">
+              <h2 class="text-base font-bold text-primary mb-4">3・遷入地點</h2>
+              <div class="grid sm:grid-cols-3 gap-3 text-sm">
+                <div><label class="block text-xs text-text-light mb-1">縣市</label><select class="w-full border border-border-soft rounded px-3 py-2 bg-white"><option>高雄市</option></select></div>
+                <div><label class="block text-xs text-text-light mb-1">區域</label><select class="w-full border border-border-soft rounded px-3 py-2 bg-white"><option>左營區</option></select></div>
+                <div><label class="block text-xs text-text-light mb-1">樓層</label><input class="w-full border border-border-soft rounded px-3 py-2" value="8"></div>
+                <div class="sm:col-span-2"><label class="block text-xs text-text-light mb-1">詳細地址</label><input class="w-full border border-border-soft rounded px-3 py-2" value="博愛二路 200 號"></div>
+                <div><label class="block text-xs text-text-light mb-1">電梯</label><select class="w-full border border-border-soft rounded px-3 py-2 bg-white"><option>有電梯</option><option>無電梯</option></select></div>
+              </div>
+            </div>
+            <!-- 4 物品 -->
+            <div class="wiz-step hidden" data-step="4">
+              <h2 class="text-base font-bold text-primary mb-4">4・物品清單（按空間）</h2>
+              <div class="flex gap-2 mb-3 text-sm"><span class="px-3 py-1 rounded-full bg-accent text-white">客廳</span><span class="px-3 py-1 rounded-full bg-white border border-border-soft text-text-light">主臥</span><span class="px-3 py-1 rounded-full bg-white border border-border-soft text-text-light">廚房</span><span class="px-3 py-1 rounded-full bg-white border border-border-soft text-text-light">+ 新增空間</span></div>
+              <div class="grid sm:grid-cols-2 gap-2 text-sm">
+                <label class="flex items-center gap-2 border border-border-soft rounded px-3 py-2"><input type="checkbox" checked> L 型沙發 <span class="ml-auto text-text-light text-xs">3.59 m³</span></label>
+                <label class="flex items-center gap-2 border border-border-soft rounded px-3 py-2"><input type="checkbox" checked> 六人餐桌 <span class="ml-auto text-text-light text-xs">1.46 m³</span></label>
+                <label class="flex items-center gap-2 border border-border-soft rounded px-3 py-2"><input type="checkbox" checked> 55吋電視 <span class="ml-auto text-text-light text-xs">0.09 m³</span></label>
+                <label class="flex items-center gap-2 border border-border-soft rounded px-3 py-2"><input type="checkbox"> 茶几 <span class="ml-auto text-text-light text-xs">0.4 m³</span></label>
+              </div>
+              <p class="text-xs text-text-light mt-3">已選 8 件・總材積 <b class="text-primary">14.2 m³</b>（系統依尺寸自動算）</p>
+            </div>
+            <!-- 5 加購 -->
+            <div class="wiz-step hidden" data-step="5">
+              <h2 class="text-base font-bold text-primary mb-4">5・加購服務</h2>
+              <div class="space-y-2 text-sm">
+                <label class="flex items-center gap-2 border border-border-soft rounded px-3 py-2"><input type="checkbox" checked> 鋼琴搬運 <span class="ml-auto">NT$ 3,000</span></label>
+                <label class="flex items-center gap-2 border border-border-soft rounded px-3 py-2"><input type="checkbox"> 家具拆裝 <span class="ml-auto">NT$ 1,500</span></label>
+                <label class="flex items-center gap-2 border border-border-soft rounded px-3 py-2"><input type="checkbox"> 紙箱代購（10個） <span class="ml-auto">NT$ 500</span></label>
+              </div>
+            </div>
+            <!-- 6 車種人力 -->
+            <div class="wiz-step hidden" data-step="6">
+              <h2 class="text-base font-bold text-primary mb-4">6・車種與人力</h2>
+              <div class="text-sm space-y-3">
+                <div><label class="block text-xs text-text-light mb-1">計價方式</label><div class="flex gap-2"><span class="px-3 py-1.5 rounded bg-accent text-white">材積制</span><span class="px-3 py-1.5 rounded bg-white border border-border-soft text-text-light">包車制</span></div></div>
+                <div class="grid sm:grid-cols-2 gap-3">
+                  <div><label class="block text-xs text-text-light mb-1">建議車種</label><select class="w-full border border-border-soft rounded px-3 py-2 bg-white"><option>3.5噸貨車</option><option>5噸貨車</option><option>1噸小貨車</option></select></div>
+                  <div><label class="block text-xs text-text-light mb-1">人力</label><input class="w-full border border-border-soft rounded px-3 py-2" value="3"></div>
+                </div>
+              </div>
+            </div>
+            <!-- 7 距離 -->
+            <div class="wiz-step hidden" data-step="7">
+              <h2 class="text-base font-bold text-primary mb-4">7・距離試算</h2>
+              <div class="bg-bg border border-border-soft rounded-lg p-4 text-sm">
+                <div class="flex items-center justify-between"><span class="text-text-light">🗺️ Google 地圖自動帶入</span><button class="text-accent text-xs">重新計算</button></div>
+                <div class="mt-2 text-2xl font-bold text-primary">19.6 公里 <span class="text-base font-normal text-text-light">・約 56 分</span></div>
+                <p class="text-xs text-text-light mt-1">三民區建工路 100 號 → 左營區博愛二路 200 號</p>
+              </div>
+            </div>
+            <!-- 8 折扣訂金 -->
+            <div class="wiz-step hidden" data-step="8">
+              <h2 class="text-base font-bold text-primary mb-4">8・折扣與訂金</h2>
+              <div class="grid sm:grid-cols-2 gap-3 text-sm">
+                <div><label class="block text-xs text-text-light mb-1">折扣方案</label><select class="w-full border border-border-soft rounded px-3 py-2 bg-white"><option>老客戶回饋 10%</option><option>早鳥優惠 5%</option><option>不套用</option></select></div>
+                <div><label class="block text-xs text-text-light mb-1">訂金 (NT$)</label><input class="w-full border border-border-soft rounded px-3 py-2" value="5,000"></div>
+              </div>
+            </div>
+            <!-- 9 預覽 -->
+            <div class="wiz-step hidden" data-step="9">
+              <h2 class="text-base font-bold text-primary mb-4">9・預覽與送出</h2>
+              <div class="space-y-2 text-sm">
+                <div class="flex justify-between"><span class="text-text-light">搬遷服務（含車含人）</span><span>NT$ 16,500</span></div>
+                <div class="flex justify-between"><span class="text-text-light">距離加價</span><span>NT$ 480</span></div>
+                <div class="flex justify-between"><span class="text-text-light">樓層加價</span><span>NT$ 1,600</span></div>
+                <div class="flex justify-between"><span class="text-text-light">加購（鋼琴搬運）</span><span>NT$ 3,000</span></div>
+                <div class="flex justify-between text-green-600"><span>老客戶折扣 10%</span><span>− NT$ 2,158</span></div>
+                <div class="flex justify-between font-bold text-lg text-primary pt-2 border-t border-border-soft"><span>總額</span><span>NT$ 18,600</span></div>
+                <div class="flex justify-between text-text-light text-xs"><span>訂金</span><span>NT$ 5,000</span></div>
+              </div>
+              <button data-nav="estimate-detail" class="w-full mt-5 bg-accent text-white py-2.5 rounded font-medium">✓ 建立估價單</button>
+              <p class="text-center text-xs text-text-light mt-2">建立後可一鍵列印 PDF、傳 LINE 給客戶</p>
+            </div>
+          </div>
+
+          <div class="flex justify-between mt-5">
+            <button data-wiz="prev" class="px-5 py-2.5 rounded border border-border-soft text-primary text-sm font-medium disabled:opacity-40 disabled:cursor-not-allowed">← 上一步</button>
+            <button data-wiz="next" class="px-5 py-2.5 rounded bg-primary text-white text-sm font-medium">下一步 →</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== 訂單列表 ===== -->
+      <section data-screen="orders" class="screen">
+        <p class="text-text-light text-sm mb-4">搬完收尾款，每筆收款留底；已收多少、尚欠多少一眼看清。點任一張看明細。</p>
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mb-5 max-w-3xl">
+          <div class="bg-white rounded-lg shadow p-4 border-l-4 border-l-red-500 border border-border-soft"><p class="text-xs text-red-600 mb-1">待收訂金</p><p class="text-2xl font-bold text-red-600">3</p><p class="text-xs text-red-500">NT$ 24,000</p></div>
+          <div class="bg-white rounded-lg shadow p-4 border-l-4 border-l-orange-500 border border-border-soft"><p class="text-xs text-orange-600 mb-1">待收尾款</p><p class="text-2xl font-bold text-orange-600">2</p><p class="text-xs text-orange-500">NT$ 35,600</p></div>
+          <div class="bg-white rounded-lg shadow p-4 border border-green-200"><p class="text-xs text-text-light mb-1">本月已結清</p><p class="text-2xl font-bold text-green-600">14</p><p class="text-xs text-green-500">NT$ 186,500</p></div>
+        </div>
+        <div class="flex items-center gap-2 mb-3 text-sm">
+          <span class="px-3 py-1 rounded-full bg-primary text-white font-medium">全部</span>
+          <span class="px-3 py-1 rounded-full bg-white border border-border-soft text-text-light">待收訂金</span>
+          <span class="px-3 py-1 rounded-full bg-white border border-border-soft text-text-light">待收尾款</span>
+          <span class="px-3 py-1 rounded-full bg-white border border-border-soft text-text-light">已結清</span>
+        </div>
+        <div class="bg-white rounded-lg shadow border border-border-soft overflow-hidden">
+          <table class="w-full text-sm">
+            <thead class="bg-bg text-text-light text-xs"><tr><th class="text-left px-4 py-3">訂單號</th><th class="text-left">客戶</th><th class="text-right">應收</th><th class="text-right">淨已收</th><th class="text-right">尚欠尾款</th><th class="text-left pl-6">狀態</th></tr></thead>
+            <tbody class="divide-y divide-border-soft">
+              <tr class="row-link" data-goto="order-detail"><td class="px-4 py-3 font-mono text-xs text-text-light">JOB20260624001</td><td>林先生</td><td class="text-right">NT$ 18,600</td><td class="text-right text-green-600">NT$ 18,600</td><td class="text-right">NT$ 0</td><td class="pl-6"><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-700">已結清</span></td></tr>
+              <tr class="row-link" data-goto="order-detail"><td class="px-4 py-3 font-mono text-xs text-text-light">JOB20260623002</td><td>吳先生</td><td class="text-right">NT$ 27,400</td><td class="text-right text-green-600">NT$ 5,000</td><td class="text-right text-red-600">NT$ 22,400</td><td class="pl-6"><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-700">已收訂金</span></td></tr>
+              <tr class="row-link" data-goto="order-detail"><td class="px-4 py-3 font-mono text-xs text-text-light">JOB20260622005</td><td>劉小姐</td><td class="text-right">NT$ 11,200</td><td class="text-right text-text-light">NT$ 0</td><td class="text-right text-red-600">NT$ 11,200</td><td class="pl-6"><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-700">待收訂金</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ===== 訂單詳情 ===== -->
+      <section data-screen="order-detail" class="screen">
+        <button data-nav="orders" class="text-accent text-sm font-medium mb-4">← 回訂單列表</button>
+        <div class="flex items-center gap-3 mb-6"><h2 class="text-2xl font-bold text-primary font-mono">JOB20260623002</h2><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-700">已收訂金</span></div>
+        <div class="grid lg:grid-cols-2 gap-4 mb-4">
+          <div class="bg-white rounded-lg shadow border border-border-soft p-6">
+            <h2 class="text-base font-bold text-primary mb-4 pb-3 border-b border-border-soft">客戶資訊</h2>
+            <div class="space-y-3 text-sm"><div><span class="text-text-light">姓名：</span><span class="text-primary font-medium">吳先生</span></div><div><span class="text-text-light">電話：</span><span class="text-primary">0913-222-333</span></div></div>
+          </div>
+          <div class="bg-white rounded-lg shadow border border-border-soft p-6">
+            <h2 class="text-base font-bold text-primary mb-4 pb-3 border-b border-border-soft">收款狀態</h2>
+            <div class="space-y-1.5 text-sm">
+              <div class="flex justify-between"><span class="text-text-light">應收</span><span>NT$ 27,400</span></div>
+              <div class="flex justify-between text-green-600"><span>淨已收</span><span>NT$ 5,000</span></div>
+              <div class="flex justify-between font-bold"><span class="text-primary">尚欠尾款</span><span class="text-red-600">NT$ 22,400</span></div>
+              <div class="border-t border-border-soft my-2"></div>
+              <div class="flex justify-between text-text-light text-xs"><span>預定訂金</span><span>NT$ 5,000</span></div>
+              <div class="flex justify-between text-text-light text-xs"><span>已收訂金</span><span>NT$ 5,000</span></div>
+              <div class="flex justify-between text-text-light text-xs"><span>訂金待收</span><span>NT$ 0</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="bg-white rounded-lg shadow border border-border-soft p-6 mb-4">
+          <h2 class="text-base font-bold text-primary mb-4 pb-3 border-b border-border-soft">搬遷資訊</h2>
+          <div class="grid md:grid-cols-2 gap-3 text-sm">
+            <div><span class="text-text-light">搬家日：</span>2026/06/23　13:30</div>
+            <div><span class="text-text-light">服務門市：</span>高雄總店</div>
+            <div><span class="text-text-light">遷出：</span>楠梓區楠梓路 88 號（5F・有電梯）</div>
+            <div><span class="text-text-light">遷入：</span>三民區大昌二路 12 號（3F・無電梯）</div>
+          </div>
+        </div>
+        <div class="grid lg:grid-cols-2 gap-4">
+          <div class="bg-white rounded-lg shadow border border-border-soft p-6">
+            <h2 class="text-base font-bold text-primary mb-4 pb-3 border-b border-border-soft">收款明細</h2>
+            <table class="w-full text-sm">
+              <thead class="text-text-light text-xs"><tr><th class="text-left pb-2">類型</th><th class="text-left">方式</th><th class="text-left">時間</th><th class="text-right">金額</th><th class="text-left pl-6">經手</th></tr></thead>
+              <tbody class="divide-y divide-border-soft">
+                <tr><td class="py-2.5">訂金</td><td>現金</td><td class="text-text-light">6/23 14:20</td><td class="text-right text-green-600">+ NT$ 5,000</td><td class="pl-6 text-text-light">阿明</td></tr>
+                <tr><td class="py-2.5 text-text-light" colspan="5">尾款 NT$ 22,400 待搬家完成後收取</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="bg-white rounded-lg shadow border border-border-soft p-6">
+            <h2 class="text-base font-bold text-primary mb-4 pb-3 border-b border-border-soft">新增收款</h2>
+            <div class="space-y-3 text-sm">
+              <div><label class="block text-xs text-text-light mb-1">類型</label><div class="border border-border-soft rounded px-3 py-2 text-text-light">尾款</div></div>
+              <div><label class="block text-xs text-text-light mb-1">方式</label><div class="border border-border-soft rounded px-3 py-2 text-text-light">現金</div></div>
+              <div><label class="block text-xs text-text-light mb-1">金額 (NT$)</label><div class="border border-border-soft rounded px-3 py-2 text-text-light">22,400　<span class="text-accent text-xs">快速填入：全額</span></div></div>
+              <button class="w-full bg-accent text-white py-2 rounded font-medium">確認收款</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== 客戶 ===== -->
+      <section data-screen="customers" class="screen">
+        <p class="text-text-light text-sm mb-4">客戶名單留在公司、不在員工私人手機裡。可貼標籤、依標籤篩選。</p>
+        <div class="bg-white rounded-lg shadow border border-border-soft overflow-hidden max-w-4xl">
+          <table class="w-full text-sm">
+            <thead class="bg-bg text-text-light text-xs"><tr><th class="text-left px-4 py-3">客戶</th><th class="text-left">電話</th><th class="text-left">標籤</th><th class="text-left">最近接觸</th></tr></thead>
+            <tbody class="divide-y divide-border-soft">
+              <tr><td class="px-4 py-3 font-medium">林先生</td><td>0912-345-678</td><td><span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] bg-blue-100 text-blue-700">VIP</span> <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] bg-gray-100 text-gray-600">公司行號</span></td><td class="text-text-light">6/24</td></tr>
+              <tr><td class="px-4 py-3 font-medium">錢小姐</td><td>0921-000-002</td><td><span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] bg-green-100 text-green-700">回頭客</span></td><td class="text-text-light">6/27</td></tr>
+              <tr><td class="px-4 py-3 font-medium">吳先生</td><td>0913-222-333</td><td><span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] bg-amber-100 text-amber-700">小心議價</span></td><td class="text-text-light">6/23</td></tr>
+              <tr><td class="px-4 py-3 font-medium">陳小姐</td><td>0916-888-999</td><td class="text-text-light text-xs">—</td><td class="text-text-light">6/25</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ===== 數據分析（漏斗）===== -->
+      <section data-screen="funnel" class="screen">
+        <p class="text-text-light text-sm mb-4">進線到成交的轉換漏斗、客戶從哪來 —— 老闆看數字做決策。</p>
+        <div class="grid lg:grid-cols-2 gap-6 max-w-4xl">
+          <div class="bg-white rounded-lg shadow border border-border-soft p-6">
+            <h2 class="text-base font-bold text-primary mb-4 pb-3 border-b border-border-soft">本月轉換漏斗</h2>
+            <div class="space-y-3 text-sm">
+              <div><div class="flex justify-between mb-1"><span>進線預約</span><span class="font-medium">48</span></div><div class="h-3 rounded bg-blue-500" style="width:100%"></div></div>
+              <div><div class="flex justify-between mb-1"><span>已到府估價</span><span class="font-medium">39（81%）</span></div><div class="h-3 rounded bg-blue-400" style="width:81%"></div></div>
+              <div><div class="flex justify-between mb-1"><span>已報價</span><span class="font-medium">31（65%）</span></div><div class="h-3 rounded bg-accent" style="width:65%"></div></div>
+              <div><div class="flex justify-between mb-1"><span>成交</span><span class="font-medium">22（46%）</span></div><div class="h-3 rounded bg-green-500" style="width:46%"></div></div>
+            </div>
+          </div>
+          <div class="bg-white rounded-lg shadow border border-border-soft p-6">
+            <h2 class="text-base font-bold text-primary mb-4 pb-3 border-b border-border-soft">客戶來源</h2>
+            <div class="space-y-2.5 text-sm">
+              <div class="flex justify-between"><span class="text-text-light">LINE</span><span class="font-medium">18</span></div>
+              <div class="flex justify-between"><span class="text-text-light">電話</span><span class="font-medium">13</span></div>
+              <div class="flex justify-between"><span class="text-text-light">親友轉介</span><span class="font-medium">9</span></div>
+              <div class="flex justify-between"><span class="text-text-light">Facebook</span><span class="font-medium">5</span></div>
+              <div class="flex justify-between"><span class="text-text-light">回頭客</span><span class="font-medium">3</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== 合約(從估價單進)===== -->
+      <section data-screen="contract" class="screen">
+        <button data-nav="estimate-detail" class="text-accent text-sm font-medium mb-4">← 回估價單</button>
+        <div class="bg-white rounded-lg shadow border border-border-soft p-8 max-w-2xl mx-auto text-sm leading-relaxed">
+          <div class="text-center"><div class="text-lg font-bold tracking-wide text-primary">搬家服務契約書</div><div class="text-text-light text-xs mt-1">合約編號 C-0042・立約日期 2026/06/24</div></div>
+          <div class="my-5"><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-700">已簽署</span></div>
+          <table class="w-full mb-4">
+            <tr><td class="text-text-light py-1 w-24 align-top">甲方</td><td>宏運搬家有限公司　統編 53661014　電話 07-777-8888</td></tr>
+            <tr><td class="text-text-light py-1 align-top">乙方</td><td>林先生　電話 0912-345-678</td></tr>
+            <tr><td class="text-text-light py-1 align-top">搬遷</td><td>2026/06/24 09:00　三民區建工路 → 左營區博愛二路</td></tr>
+            <tr><td class="text-text-light py-1 align-top">價金</td><td>總額 NT$ 18,600（訂金 5,000・尾款 13,600）</td></tr>
+          </table>
+          <div class="border-t border-border-soft pt-4 flex items-end justify-between">
+            <div class="text-text-light text-xs">乙方簽名</div>
+            <div class="text-2xl text-primary" style="font-family:'Brush Script MT',cursive">林志明</div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+</div>
+
+<script>
+(() => {
+  const titles = {dashboard:'儀表板', calendar:'行事曆', dispatch:'派工看板', reservations:'預約單',
+    'reservation-detail':'預約單詳情', estimates:'估價單', 'estimate-wizard':'建立估價單',
+    'estimate-detail':'估價師工作台', orders:'訂單', 'order-detail':'訂單明細',
+    customers:'客戶', funnel:'數據分析', contract:'合約'};
+  const screens = document.querySelectorAll('.screen');
+  const navItems = document.querySelectorAll('.nav-link');
+  function show(id){
+    screens.forEach(s => s.classList.toggle('active', s.dataset.screen === id));
+    const navKey = ['estimate-detail','contract','estimate-wizard'].includes(id) ? 'estimates'
+      : id === 'order-detail' ? 'orders'
+      : id === 'reservation-detail' ? 'reservations' : id;
+    navItems.forEach(n => n.classList.toggle('active', n.dataset.nav === navKey));
+    document.getElementById('pageTitle').textContent = titles[id] || '';
+    if (id === 'estimate-wizard') wizShow(1);
+    window.scrollTo(0,0);
+  }
+
+  // 建立估價 9 步精靈
+  const WIZ_TOTAL = 9;
+  const wizNames = {1:'客戶資訊',2:'遷出地點',3:'遷入地點',4:'物品清單',5:'加購服務',6:'車種與人力',7:'距離試算',8:'折扣與訂金',9:'預覽送出'};
+  let wizStep = 1;
+  function wizShow(n){
+    wizStep = Math.min(WIZ_TOTAL, Math.max(1, n));
+    document.querySelectorAll('.wiz-step').forEach(s => s.classList.toggle('hidden', +s.dataset.step !== wizStep));
+    document.getElementById('wizStepNo').textContent = wizStep;
+    document.getElementById('wizStepName').textContent = wizNames[wizStep];
+    document.getElementById('wizBar').style.width = (wizStep / WIZ_TOTAL * 100) + '%';
+    document.querySelector('[data-wiz=prev]').disabled = wizStep === 1;
+    document.querySelector('[data-wiz=next]').classList.toggle('hidden', wizStep === WIZ_TOTAL);
+  }
+
+  document.addEventListener('click', (e) => {
+    const wiz = e.target.closest('[data-wiz]');
+    if (wiz){ wizShow(wizStep + (wiz.dataset.wiz === 'next' ? 1 : -1)); return; }
+    const nav = e.target.closest('[data-nav]');
+    if (nav){ show(nav.dataset.nav); return; }
+    const row = e.target.closest('[data-goto]');
+    if (row){ show(row.dataset.goto); }
+  });
+})();
+</script>
+</body>
+</html>
