@@ -30,13 +30,13 @@ tailwind.config = { theme: { extend: { colors: {
 </div>
 
 <div class="flex min-h-screen">
-  <!-- 側欄(對齊真實 app:bg-primary、active=橘、分組) -->
-  <aside class="w-[220px] bg-primary text-gray-100 flex flex-col shrink-0">
+  <!-- 側欄(對齊真實 app:bg-primary、active=橘、分組)；手機版=off-canvas 抽屜 -->
+  <aside id="sidebar" class="w-[220px] bg-primary text-gray-100 flex flex-col shrink-0 fixed inset-y-0 left-0 z-40 -translate-x-full transition-transform duration-200 md:static md:translate-x-0">
     <div class="px-3 py-5 border-b border-white/10">
       <h1 class="text-lg font-bold tracking-wide px-2">Movely</h1>
       <p class="text-xs text-gray-300 mt-1 px-2">宏運搬家（示範）</p>
     </div>
-    <nav class="flex-1 px-3 py-4 space-y-1">
+    <nav class="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
       <a data-nav="dashboard" class="nav-link active flex items-center gap-3 px-3 py-2 rounded text-sm font-medium hover:bg-white/10">
         <svg class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l9-9 9 9M5 10v10h14V10"/></svg><span>儀表板</span></a>
 
@@ -59,10 +59,18 @@ tailwind.config = { theme: { extend: { colors: {
     <div class="px-5 py-4 border-t border-white/10 text-xs text-gray-400">估價師 阿明</div>
   </aside>
 
+  <!-- 手機版抽屜背景遮罩 -->
+  <div id="sidebarBackdrop" class="fixed inset-0 bg-black/40 z-30 hidden md:hidden"></div>
+
   <!-- 主內容 -->
   <div class="flex-1 flex flex-col min-w-0">
     <header class="bg-white border-b border-border-soft px-4 md:px-8 py-4 flex items-center justify-between">
-      <h1 id="pageTitle" class="text-[22px] font-bold text-primary">儀表板</h1>
+      <div class="flex items-center gap-2 min-w-0">
+        <button id="sidebarToggle" aria-label="開關選單" aria-expanded="false" class="md:hidden -ml-1 p-1.5 rounded text-primary hover:bg-gray-100 shrink-0">
+          <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+        <h1 id="pageTitle" class="text-[22px] font-bold text-primary truncate">儀表板</h1>
+      </div>
       <div class="flex items-center gap-3">
         <span class="hidden sm:inline text-sm text-text-light">阿明・宏運搬家</span>
         <a href="index.html" class="text-sm text-accent font-medium px-3 py-1.5">← 回介紹頁</a>
@@ -681,6 +689,17 @@ tailwind.config = { theme: { extend: { colors: {
     customers:'客戶', funnel:'數據分析', contract:'合約'};
   const screens = document.querySelectorAll('.screen');
   const navItems = document.querySelectorAll('.nav-link');
+
+  // 手機版側欄抽屜(md 以上由 CSS 固定展開、此狀態無作用)
+  const sidebar = document.getElementById('sidebar');
+  const backdrop = document.getElementById('sidebarBackdrop');
+  const sidebarToggle = document.getElementById('sidebarToggle');
+  function setSidebar(open){
+    sidebar.classList.toggle('-translate-x-full', !open);
+    backdrop.classList.toggle('hidden', !open);
+    sidebarToggle.setAttribute('aria-expanded', String(open));
+  }
+
   function show(id){
     screens.forEach(s => s.classList.toggle('active', s.dataset.screen === id));
     const navKey = ['estimate-detail','contract','estimate-wizard'].includes(id) ? 'estimates'
@@ -689,6 +708,7 @@ tailwind.config = { theme: { extend: { colors: {
     navItems.forEach(n => n.classList.toggle('active', n.dataset.nav === navKey));
     document.getElementById('pageTitle').textContent = titles[id] || '';
     if (id === 'estimate-wizard') wizShow(1);
+    setSidebar(false);
     window.scrollTo(0,0);
   }
 
@@ -707,6 +727,8 @@ tailwind.config = { theme: { extend: { colors: {
   }
 
   document.addEventListener('click', (e) => {
+    if (e.target.closest('#sidebarToggle')){ setSidebar(sidebar.classList.contains('-translate-x-full')); return; }
+    if (e.target === backdrop){ setSidebar(false); return; }
     const wiz = e.target.closest('[data-wiz]');
     if (wiz){ wizShow(wizStep + (wiz.dataset.wiz === 'next' ? 1 : -1)); return; }
     const nav = e.target.closest('[data-nav]');
